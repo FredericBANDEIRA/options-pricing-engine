@@ -26,7 +26,7 @@ from pricer.ui.components import (
     early_exercise_table,
     gamma_theta_table,
 )
-from pricer.ui.charts import chart_vs_spot, chart_vs_vol
+from pricer.ui.charts import chart_vs_spot, chart_vs_vol, build_all_charts, ALL_GREEKS_LIST
 
 # ---------------------------------------------------------------------------
 # Page config
@@ -57,7 +57,7 @@ mult = params["mult"]
 # ---------------------------------------------------------------------------
 # Header
 # ---------------------------------------------------------------------------
-st.markdown("## Options Pricer")
+st.markdown('<div class="app-header">Options Pricer</div>', unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Tabs
@@ -158,27 +158,24 @@ with tab_pricer:
     # ── CHARTS ────────────────────────────────────────────────────────────
     section_header("Charts")
 
-    greek_options = ["price", "delta", "gamma", "vega", "theta", "rho"]
+    # Column headers
+    col_h1, col_h2 = st.columns(2)
+    with col_h1:
+        st.markdown('<div class="chart-section-title">vs Spot</div>', unsafe_allow_html=True)
+    with col_h2:
+        st.markdown('<div class="chart-section-title">vs Volatility</div>', unsafe_allow_html=True)
 
-    col_chart_sel1, col_chart_sel2 = st.columns(2)
-    with col_chart_sel1:
-        st.markdown("**vs Spot**")
-        greek_spot = st.selectbox("Chart vs Spot", greek_options,
-                                  index=0, label_visibility="collapsed",
-                                  key="greek_spot")
-    with col_chart_sel2:
-        st.markdown("**vs Vol**")
-        greek_vol = st.selectbox("Chart vs Vol", greek_options,
-                                 index=0, label_visibility="collapsed",
-                                 key="greek_vol")
+    # Build all charts in one efficient pass
+    all_charts = build_all_charts(S, K, T, r, q, sigma)
 
-    col_fig1, col_fig2 = st.columns(2)
-    with col_fig1:
-        fig_spot = chart_vs_spot(S, K, T, r, q, sigma, greek_spot)
-        st.plotly_chart(fig_spot, use_container_width=True)
-    with col_fig2:
-        fig_vol = chart_vs_vol(S, K, T, r, q, sigma, greek_vol)
-        st.plotly_chart(fig_vol, use_container_width=True)
+    # Render 6 rows × 2 columns
+    for greek_name in ALL_GREEKS_LIST:
+        fig_spot, fig_vol = all_charts[greek_name]
+        col1, col2 = st.columns(2)
+        with col1:
+            st.plotly_chart(fig_spot, width="stretch", key=f"spot_{greek_name}")
+        with col2:
+            st.plotly_chart(fig_vol, width="stretch", key=f"vol_{greek_name}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════

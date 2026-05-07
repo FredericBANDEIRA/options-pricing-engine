@@ -1,0 +1,41 @@
+=== GIT ROUTINE: OPTIONS PRICER ===
+
+1. WHEN YOU LEAVE THE PROJECT (Save your work)
+-----------------------------------------------
+Run these commands in your terminal before you close your computer:
+
+git add .
+git commit -m "Brief description of what you changed"
+git push origin main
+
+
+2. WHEN YOU START WORKING (On the same computer)
+-----------------------------------------------
+Before you start coding, it's good practice to make sure you have the latest version:
+
+git pull origin main
+
+
+3. WHEN YOU CHANGE COMPUTERS (First time setup on a new PC)
+-----------------------------------------------
+If you move to a new computer, you need to download the project first:
+
+# Step A: Clone the repository
+git clone https://github.com/FredericBANDEIRA/options-pricing-engine.git
+
+# Step B: Go into the folder
+cd options-pricing-engine
+
+# Step C: Setup the environment using uv
+uv sync
+
+# Step D: Run the app
+uv run streamlit run app.py
+
+
+4. WHEN YOU CHANGE COMPUTERS (Already set up)
+-----------------------------------------------
+If the code is already on the computer but you just arrived:
+
+git pull origin main
+uv sync   (Run this just in case you added new packages on the other PC)
