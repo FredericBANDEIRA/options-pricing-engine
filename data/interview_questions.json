@@ -1,0 +1,152 @@
+[
+    {
+        "category": "Greeks & Sensitivities",
+        "question": "What does Delta represent and how does it differ for calls and puts?",
+        "answer": "Delta (Δ) measures the rate of change of the option price with respect to a $1 change in the underlying spot price. For a European call, Δ = e^{-qT} N(d₁) ∈ [0, 1]. For a put, Δ = e^{-qT}(N(d₁) − 1) ∈ [−1, 0]. A delta of 0.50 means the option price moves $0.50 for every $1 move in spot. Delta also approximates the probability that the option finishes in-the-money under the risk-neutral measure."
+    },
+    {
+        "category": "Greeks & Sensitivities",
+        "question": "Why is Gamma highest for ATM options near expiry?",
+        "answer": "Gamma (Γ) measures the curvature of the option price (∂²C/∂S²). ATM options have the most uncertainty about whether they will expire ITM or OTM. Near expiry, delta must snap rapidly from ~0 to ~1 (call) as the spot crosses the strike, creating very high gamma. Mathematically, Γ = e^{-qT} n(d₁) / (Sσ√T), and as T → 0, the √T in the denominator goes to zero, amplifying gamma for near-ATM strikes."
+    },
+    {
+        "category": "Greeks & Sensitivities",
+        "question": "Explain the relationship between Gamma and Theta.",
+        "answer": "For a delta-hedged portfolio, there is a fundamental trade-off: Θ ≈ −½ Γ S² σ². Positive gamma (long options) earns money from large spot moves but pays theta every day. Negative gamma (short options) earns theta but loses on large moves. This is the essence of the gamma-theta trade-off: you cannot be long convexity (gamma) for free — you pay for it via time decay (theta)."
+    },
+    {
+        "category": "Greeks & Sensitivities",
+        "question": "What is Vega and why doesn't Black-Scholes assume constant volatility?",
+        "answer": "Vega (ν) measures option price sensitivity to a 1% change in implied volatility: ν = S e^{-qT} n(d₁) √T. While the BSM model assumes constant volatility, in practice implied vol varies by strike (smile/skew) and maturity (term structure). Vega quantifies the exposure to this key model input. Traders use vega to manage their volatility risk, which is often the dominant risk factor for option portfolios."
+    },
+    {
+        "category": "Greeks & Sensitivities",
+        "question": "What is Vanna and when is it important?",
+        "answer": "Vanna = ∂Δ/∂σ = ∂ν/∂S. It measures how delta changes when vol moves, or equivalently how vega changes when spot moves. Vanna is important for dealers running large books because it captures the cross-risk between spot and vol. It's especially significant for risk reversals and in markets where spot-vol correlation (the 'skew dynamic') is strong. Vanilla formula: Vanna = −e^{-qT} n(d₁) d₂ / σ."
+    },
+    {
+        "category": "Greeks & Sensitivities",
+        "question": "What is Charm and why do traders care about it?",
+        "answer": "Charm = −∂Δ/∂t is the rate at which delta changes as time passes (delta decay). Traders care because their delta hedge drifts overnight even without any spot move. A large charm means the hedge needs frequent rebalancing just from time passing. It's particularly significant for options approaching expiry and around dividends."
+    },
+    {
+        "category": "Greeks & Sensitivities",
+        "question": "How does Rho behave and when is it relevant?",
+        "answer": "Rho = ∂C/∂r measures sensitivity to interest rates. Call Rho is positive (higher rates increase call value through the forward effect). Put Rho is negative. Rho is larger for longer-dated options (proportional to T) and for deep ITM options. In a rising/falling rate environment or for LEAPS, rho can be a material risk factor."
+    },
+    {
+        "category": "Greeks & Sensitivities",
+        "question": "How do you compute Cash Delta and why is it useful?",
+        "answer": "Cash Delta = Δ × S × Lots × Multiplier. It converts the abstract delta into an actual dollar exposure. For a 100-lot position in options with mulitplier 100, a delta of 0.50 on a $100 stock gives Cash Δ = 0.50 × 100 × 100 × 100 = $500,000. This is the dollar change in portfolio value per $1 spot move — the raw number that a risk manager cares about."
+    },
+    {
+        "category": "Volatility",
+        "question": "What is the difference between historical and implied volatility?",
+        "answer": "Historical (realized) volatility is the standard deviation of past log-returns, typically annualized (σ_hist = std(ln(Sₜ/Sₜ₋₁)) × √252). Implied volatility is the σ that equates the BS model price to the observed market price — it's a forward-looking measure reflecting market expectations of future volatility. The difference σ_implied − σ_realized is called the 'vol risk premium' and is systematically positive on average, which is why selling options tends to be profitable over time."
+    },
+    {
+        "category": "Volatility",
+        "question": "What is the volatility smile and why does it exist?",
+        "answer": "The vol smile is the empirical observation that implied vol is not constant across strikes: OTM puts typically have higher implied vol than ATM options (skew), and far OTM calls may also have elevated vol. This exists because: (1) the real-world return distribution has fat tails and negative skewness, (2) crash risk: investors pay a premium for downside protection, (3) supply/demand: systematic put buying by hedgers drives up put premiums. The Black-Scholes model assumes flat vol, so the smile represents a discrepancy between the model and market reality."
+    },
+    {
+        "category": "Volatility",
+        "question": "What is the term structure of volatility?",
+        "answer": "The term structure shows how implied vol varies across different maturities. Typically, short-term implied vol is more volatile (reacts to news), while long-term implied vol is more stable (mean-reverts). In a 'normal' environment, the term structure is upward-sloping (longer-dated options have higher implied vol). During crises, it can invert: short-dated vol spikes above long-dated vol, known as 'backwardation' in vol terms."
+    },
+    {
+        "category": "Volatility",
+        "question": "How does volatility of volatility (vol-of-vol) affect option pricing?",
+        "answer": "Vol-of-vol measures how much implied volatility itself fluctuates. High vol-of-vol increases the value of options on options (compound options) and convexity in vega — i.e., positions that are long vomma (∂²Price/∂σ²) benefit from vol-of-vol. The VIX index measures 30-day implied vol of S&P 500 options, and VVIX measures the vol-of-VIX. Stochastic vol models like Heston explicitly incorporate vol-of-vol as a parameter."
+    },
+    {
+        "category": "Pricing Theory",
+        "question": "Derive Put-Call Parity for European options.",
+        "answer": "For European options with continuous dividend yield: C − P = S e^{-qT} − K e^{-rT}. Proof by no-arbitrage: Portfolio A = {long call, short put} pays (S_T − K) at expiry. Portfolio B = {long stock paying continuous div, short K e^{-rT} in bonds} also pays (S_T − K). Same payoff ⟹ same price: C − P = S e^{-qT} − K e^{-rT}. This is model-independent — it doesn't assume any particular dynamics for S."
+    },
+    {
+        "category": "Pricing Theory",
+        "question": "What is risk-neutral pricing and why does it work?",
+        "answer": "Risk-neutral pricing states that the fair price of a derivative is the discounted expected payoff under the risk-neutral measure Q: Price = e^{-rT} E_Q[Payoff]. Under Q, all assets earn the risk-free rate. This works because: (1) in a complete market, every derivative can be replicated by a self-financing portfolio of the underlying and bond, (2) the no-arbitrage condition implies the existence of an equivalent martingale measure, (3) the replication argument is preference-free — the drift of S cancels out in the hedge."
+    },
+    {
+        "category": "Pricing Theory",
+        "question": "What are the assumptions of the Black-Scholes model?",
+        "answer": "Key assumptions: (1) Log-normal returns: dS/S = μdt + σdW (geometric Brownian motion), (2) Constant volatility σ, (3) Constant risk-free rate r, (4) No transaction costs or taxes, (5) Continuous trading and hedging, (6) No dividends (or continuous dividend yield), (7) European exercise only, (8) No arbitrage. In practice, nearly all of these are violated, which is why traders use implied vol, smile models, and discrete hedging adjustments."
+    },
+    {
+        "category": "Pricing Theory",
+        "question": "Explain how the Black-Scholes PDE is derived.",
+        "answer": "Start with a self-financing delta-hedged portfolio: Π = C − Δ·S. By Itô's lemma, dC = (∂C/∂t + ½σ²S²∂²C/∂S²)dt + ∂C/∂S·dS. Choose Δ = ∂C/∂S to eliminate dS risk: dΠ = (∂C/∂t + ½σ²S²Γ)dt. No-arbitrage requires dΠ = r·Π·dt, giving the BS PDE: ∂C/∂t + ½σ²S²∂²C/∂S² + rS∂C/∂S − rC = 0. The drift μ of S does not appear — this is the key insight of risk-neutral pricing."
+    },
+    {
+        "category": "Pricing Theory",
+        "question": "What is the Forward price of a stock and how does it relate to options?",
+        "answer": "Forward = S × e^{(r−q)T}, where r is the risk-free rate and q the continuous dividend yield. The forward is the strike at which a forward contract has zero value. In BS, the forward determines the at-the-money-forward (ATMF) level where call and put prices are equal (adjusted for discounting). The forward replaces spot in many quant formulas because it incorporates carry costs, making formulas cleaner."
+    },
+    {
+        "category": "Trading & P&L",
+        "question": "How do you attribute the daily P&L of a delta-hedged option position?",
+        "answer": "P&L decomposition for a delta-hedged position: ΔP&L ≈ Theta × Δt + ½ Gamma × (ΔS)² + Vega × Δσ + higher-order terms. Theta P&L: time decay (negative for long options). Gamma P&L: realized convexity from spot moves (positive if move² > expected). Vega P&L: mark-to-market from vol change. The 'breakeven' move is where gamma P&L = −theta: ΔS_be = √(−2Θ/Γ), approximately σ × S × √(Δt)."
+    },
+    {
+        "category": "Trading & P&L",
+        "question": "What is gamma scalping?",
+        "answer": "Gamma scalping is the practice of systematically buying an option (getting long gamma), delta-hedging it, and then re-hedging as spot moves. When spot moves up, delta increases, so you sell some of the underlying at a higher price. When spot moves down, delta decreases, so you buy underlying at a lower price. This 'buy low, sell high' generates realized gamma P&L = ½Γ(ΔS)². The cost is theta that you pay each day. Net profitability depends on realized vol vs. implied vol at which you bought the option."
+    },
+    {
+        "category": "Trading & P&L",
+        "question": "When is it profitable to be long gamma?",
+        "answer": "Long gamma is profitable when realized volatility exceeds implied volatility. Specifically, the cumulative gamma P&L over the option's life is: Σ ½Γ(ΔS²) − Total theta paid ≈ Γ S²/2 × [σ²_realized − σ²_implied] × T. So you make money when the actual moves (realized vol) exceed what you paid for in premium (implied vol). This is why long gamma = long realized vol, short gamma = short realized vol."
+    },
+    {
+        "category": "Trading & P&L",
+        "question": "What is the Delta-Gamma approximation?",
+        "answer": "The Delta-Gamma approximation uses a second-order Taylor expansion to estimate the change in option price: ΔC ≈ Δ × ΔS + ½ Γ × (ΔS)². This is more accurate than the linear delta approximation for larger moves. For a 1% move on a $100 stock: ΔC ≈ 0.50 × 1 + ½ × 0.02 × 1² = $0.51. The gamma term captures the curvature and becomes significant for large moves."
+    },
+    {
+        "category": "American Options",
+        "question": "Why might it be optimal to early-exercise an American put?",
+        "answer": "For a deep ITM American put, the intrinsic value K − S may exceed the European put value because: (1) the time value of receiving K now (earning risk-free interest) outweighs the option's remaining time value, (2) the put can't be worth more than K (even if S goes to 0), so the discount factor e^{-rT} on K creates a 'ceiling' problem. Early exercise is optimal when the interest earned on K exceeds the remaining time value. This typically happens for deep ITM puts with high r and/or long T."
+    },
+    {
+        "category": "American Options",
+        "question": "When is early exercise optimal for an American call on a dividend-paying stock?",
+        "answer": "For a non-dividend-paying stock, it's never optimal to early-exercise an American call (the time value is always positive). With discrete dividends, early exercise may be optimal just before an ex-dividend date if: Dividend > K × [1 − e^{-r(T−t_ex)}]. Intuitively, the stock drops by the dividend amount on the ex-date, destroying option value. Exercising just before captures the dividend. With continuous dividend yield q > 0, early exercise of calls becomes more likely."
+    },
+    {
+        "category": "American Options",
+        "question": "Why does Put-Call Parity not hold for American options?",
+        "answer": "Put-call parity (C − P = S e^{-qT} − K e^{-rT}) is an exact equality only for Europeans because it relies on holding to maturity. For Americans, early exercise creates an inequality: S − K ≤ C_am − P_am ≤ S e^{-qT} − K e^{-rT}. The American put can be worth more than the European put (early exercise premium), and similarly for the call with dividends. So we get bounds rather than a strict equality."
+    },
+    {
+        "category": "American Options",
+        "question": "How does the CRR binomial tree work?",
+        "answer": "The CRR tree discretizes time into N steps of Δt = T/N. At each step, the stock goes up by u = e^{σ√Δt} or down by d = 1/u. The risk-neutral probability is p = (e^{(r−q)Δt} − d)/(u − d). At maturity, compute payoffs. Then work backwards: at each node, the option value is max(exercise value, discounted continuation value). For European options, only continuation value is used. For American, we take the max of exercise and continuation at every node, which captures early exercise."
+    },
+    {
+        "category": "Numerical Methods",
+        "question": "How many steps are needed in a binomial tree for accurate pricing?",
+        "answer": "The CRR binomial tree converges to the BS price as N → ∞, but the convergence is O(1/N) with oscillation (even and odd N give different systematic biases). Practically: N = 100-200 steps gives accuracy to ~0.01 for most options. Richardson extrapolation (averaging N and N+1 trees) can accelerate convergence. For exotic options, more steps may be needed to capture barrier/early exercise features accurately."
+    },
+    {
+        "category": "Numerical Methods",
+        "question": "What is Monte Carlo simulation for options and when is it preferred?",
+        "answer": "Monte Carlo simulates many random paths of the underlying and averages the discounted payoffs: Price ≈ e^{-rT} × (1/M) Σ Payoff(S_T^i). It's preferred for: (1) path-dependent options (Asian, lookback, barrier), (2) multi-asset options (baskets, rainbow), (3) complex stochastic models (stochastic vol, jumps). The convergence rate is O(1/√M) regardless of dimension — this makes it scale well to high-dimensional problems. Variance reduction techniques (antithetic variates, control variates) can improve efficiency."
+    },
+    {
+        "category": "Hedging & Risk Management",
+        "question": "What is delta hedging and why is it imperfect in practice?",
+        "answer": "Delta hedging means holding Δ shares of the underlying per option to neutralize first-order price risk. In theory (BSM), continuous delta hedging perfectly replicates the option. In practice, hedging is imperfect because: (1) discrete hedging: you can only rebalance at finite intervals, leaving gamma exposure, (2) transaction costs: each rebalance incurs costs, (3) stochastic vol: BSM assumes constant vol but realized vol changes, (4) jumps: discontinuous price moves create unhedgeable gaps. The hedge error is proportional to (ΔS)² × Γ."
+    },
+    {
+        "category": "Hedging & Risk Management",
+        "question": "How do you hedge a portfolio that is delta-neutral but has significant gamma risk?",
+        "answer": "A delta-neutral portfolio with high gamma means you're exposed to large spot moves (P&L ~ ½Γ(ΔS)²). To hedge gamma, you need to trade other options (spot has zero gamma). Steps: (1) buy/sell options to neutralize portfolio gamma, (2) this will change your delta, so rebalance delta with spot. Note: you can't hedge gamma with the underlying alone — you need another option. A common strategy is to buy/sell ATM straddles for gamma and then delta-hedge."
+    },
+    {
+        "category": "Hedging & Risk Management",
+        "question": "What is a trading shortcut for estimating the daily breakeven move?",
+        "answer": "The daily breakeven move is the spot move needed for gamma P&L to offset theta: ΔS_be = S × σ / √252. For example, with S = 100 and σ = 20%, the daily breakeven is 100 × 0.20/15.87 ≈ $1.26 or 1.26%. If the stock moves more than this, a long gamma position profits. If less, short gamma wins. Another quick estimate: daily vol ≈ annual vol / 16 (since √252 ≈ 16)."
+    }
+]
