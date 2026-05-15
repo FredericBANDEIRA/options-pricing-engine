@@ -12,10 +12,14 @@ A professional-grade vanilla options pricer featuring:
 import json
 import pathlib
 
+import numpy as np
 import streamlit as st
 
 from pricer.models import black_scholes as bs
 from pricer.models import binomial
+from pricer.models.implied_vol import implied_vol
+from pricer.models.monte_carlo import price_european_mc
+from pricer.models.exotic import barrier_price, digital_price, asian_geometric_price
 from pricer.ui.styles import inject_css
 from pricer.ui.sidebar import render_sidebar
 from pricer.ui.components import (
@@ -27,6 +31,26 @@ from pricer.ui.components import (
     gamma_theta_table,
 )
 from pricer.ui.charts import chart_vs_spot, chart_vs_vol, build_all_charts, ALL_GREEKS_LIST
+from pricer.ui.tab_strategies import render_strategies_tab
+
+
+# ---------------------------------------------------------------------------
+# Cached data loaders
+# ---------------------------------------------------------------------------
+
+@st.cache_data
+def _load_interview_questions() -> list[dict]:
+    """Load and cache interview questions from JSON."""
+    questions_path = pathlib.Path(__file__).parent / "data" / "interview_questions.json"
+    with open(questions_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+@st.cache_data
+def _cached_early_exercise(S: float, K: float, T: float, r: float,
+                           q: float, sigma: float, opt: str) -> dict:
+    """Cache binomial tree early exercise analysis."""
+    return binomial.early_exercise_analysis(S, K, T, r, q, sigma, opt)
 
 # ---------------------------------------------------------------------------
 # Page config
@@ -62,7 +86,7 @@ st.markdown('<div class="app-header">Options Pricer</div>', unsafe_allow_html=Tr
 # ---------------------------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------------------------
-tab_pricer, tab_interview = st.tabs(["📊 Derivatives Pricer", "🎓 Interview Questions"])
+tab_pricer, tab_strategies, tab_interview = st.tabs(["📊 Derivatives Pricer", "📈 Strategies", "🎓 Interview Questions"])
 
 # ═══════════════════════════════════════════════════════════════════════════
 # TAB 1: Derivatives Pricer
@@ -135,7 +159,7 @@ with tab_pricer:
     # ── EARLY EXERCISE — AMERICAN STYLE ───────────────────────────────────
     with st.expander("🇺🇸 Early Exercise Analysis — American Style", expanded=False):
         if T > 0:
-            ee = binomial.early_exercise_analysis(S, K, T, r, q, sigma, opt)
+            ee = _cached_early_exercise(S, K, T, r, q, sigma, opt)
             early_exercise_table(ee)
             if ee["early_exercise_premium"] > 0.001:
                 st.info(f"Early exercise premium of **{ee['early_exercise_premium']:.4f}** "
@@ -146,6 +170,51 @@ with tab_pricer:
                            "European and American prices are essentially equal.")
         else:
             st.warning("Option has expired (T = 0). No early exercise analysis available.")
+
+    # ── IMPLIED VOLATILITY SOLVER ─────────────────────────────────────────
+    with st.expander("🔍 Implied Volatility Solver", expanded=False):
+        st.markdown("Calculate implied volatility from a market price using Newton-Raphson.")
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            market_price = st.number_input("Market Price", value=float(bs.price(S, K, T, r, q, sigma, opt)))
+        with col2:
+            iv = implied_vol(market_price, S, K, T, r, q, opt)
+            if np.isnan(iv):
+                st.error("No valid implied volatility (arbitrage violation).")
+            else:
+                st.success(f"Implied Volatility (σ): **{iv * 100:.2f}%**")
+
+    # ── MONTE CARLO SIMULATION ────────────────────────────────────────────
+    with st.expander("🎲 Monte Carlo Engine", expanded=False):
+        st.markdown("Price this option using a vectorised Monte Carlo simulation with antithetic paths and a control variate.")
+        if st.button("Run Simulation (100k paths)"):
+            with st.spinner("Simulating..."):
+                mc_res = price_european_mc(S, K, T, r, q, sigma, opt, n_paths=100000, control_variate=True)
+                mc_c1, mc_c2, mc_c3 = st.columns(3)
+                mc_c1.metric("MC Price", f"${mc_res['price']:,.4f}")
+                mc_c2.metric("BS Analytical", f"${mc_res['bs_price']:,.4f}")
+                mc_c3.metric("Standard Error", f"{mc_res['std_error']:,.6f}")
+                st.caption(f"95% Confidence Interval: [{mc_res['ci_lower']:,.4f}, {mc_res['ci_upper']:,.4f}]")
+
+    # ── EXOTIC OPTIONS ────────────────────────────────────────────────────
+    with st.expander("🌴 Exotic Options (same parameters)", expanded=False):
+        ex_type = st.radio("Select Exotic Type", ["Barrier (Knock-Out)", "Digital (Cash-or-Nothing)", "Asian (Geometric Avg)"], horizontal=True)
+        
+        if "Barrier" in ex_type:
+            c1, c2 = st.columns(2)
+            barrier_lvl = c1.number_input("Barrier Level", value=float(S * 1.2 if opt == 'call' else S * 0.8))
+            b_type = c2.selectbox("Barrier Type", ["up-and-out", "down-and-out", "up-and-in", "down-and-in"])
+            bp = barrier_price(S, K, T, r, q, sigma, barrier_lvl, b_type, opt)
+            st.metric(f"{b_type.replace('-', ' ').title()} {opt.title()}", f"${bp:,.4f}")
+            
+        elif "Digital" in ex_type:
+            payout = st.number_input("Cash Payout", value=100.0)
+            dp = digital_price(S, K, T, r, q, sigma, opt, "cash-or-nothing", payout)
+            st.metric(f"Digital {opt.title()} Price", f"${dp:,.4f}")
+            
+        elif "Asian" in ex_type:
+            ap = asian_geometric_price(S, K, T, r, q, sigma, opt)
+            st.metric(f"Geometric Asian {opt.title()}", f"${ap:,.4f}")
 
     st.markdown("")
 
@@ -179,16 +248,21 @@ with tab_pricer:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# TAB 2: Interview Questions
+# TAB 2: Strategies
+# ═══════════════════════════════════════════════════════════════════════════
+with tab_strategies:
+    render_strategies_tab(S, T, r, q, sigma, lots, mult)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TAB 3: Interview Questions
 # ═══════════════════════════════════════════════════════════════════════════
 with tab_interview:
     st.markdown("### 🎓 Quant Interview Questions")
     st.markdown("Test your knowledge with these derivatives and quantitative finance questions.")
 
-    # Load questions
-    questions_path = pathlib.Path(__file__).parent / "data" / "interview_questions.json"
-    with open(questions_path, "r", encoding="utf-8") as f:
-        questions = json.load(f)
+    # Load questions (cached)
+    questions = _load_interview_questions()
 
     # Group by category
     categories: dict[str, list] = {}

@@ -4,9 +4,9 @@ Features and enhancements to implement in future versions.
 
 ## 🔴 High Priority
 
-- [ ] **Exotic options**: Barrier options (up-and-out, down-and-in, etc.), Asian options (arithmetic/geometric average), Digital/Binary options
-- [ ] **Monte Carlo simulation engine**: Path simulation with GBM, variance reduction (antithetic, control variates), pricing path-dependent payoffs
-- [ ] **Implied volatility solver**: Newton-Raphson / Brent solver to back out σ from market price
+- [x] **Exotic options**: Barrier options (up-and-out, down-and-in, etc.), Asian options (arithmetic/geometric average), Digital/Binary options
+- [x] **Monte Carlo simulation engine**: Path simulation with GBM, variance reduction (antithetic, control variates), pricing path-dependent payoffs
+- [x] **Implied volatility solver**: Newton-Raphson / Brent solver to back out σ from market price
 - [ ] **Volatility surface**: 3D surface visualization (strike × maturity → implied vol), interpolation methods (SVI, SABR)
 
 ## 🟡 Medium Priority
@@ -15,7 +15,7 @@ Features and enhancements to implement in future versions.
 - [ ] **Turbo warrants**: Knock-out barrier + leverage pricing, delta and participation rate
 - [ ] **Discount certificates**: Replication (long underlying + short call), capped upside analysis
 - [ ] **Bonus certificates**: Replication (long underlying + long down-and-out put), barrier monitoring
-- [ ] **Multi-leg strategies**: Spreads, straddles, strangles, butterflies, iron condors — combined P&L and Greeks
+- [x] **Multi-leg strategies**: Spreads, straddles, strangles, butterflies, iron condors — combined P&L and Greeks
 - [ ] **P&L scenario analysis**: What-if analysis across spot/vol/time dimensions simultaneously
 - [ ] **Trading P&L attribution**: Decompose daily P&L into delta, gamma, theta, vega, and higher-order components
 
@@ -33,4 +33,5 @@ Features and enhancements to implement in future versions.
 
 ## ✅ Completed
 
+- [x] **v0.2 (Phase 1)** — Implied Volatility Solver, Monte Carlo Engine, Exotic Options, Multi-Leg Strategies
 - [x] **v0.1** — Vanilla European options (BSM), full Greeks, CRR binomial tree, Plotly charts, interview questions

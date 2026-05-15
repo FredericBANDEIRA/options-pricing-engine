@@ -90,6 +90,21 @@ def render_sidebar() -> dict:
         option_type = st.selectbox("Type", ["call", "put"],
                                    label_visibility="collapsed", key="option_type")
 
+        # --- Input validation warnings ---
+        st.markdown("---")
+        if sigma_pct < 1.0:
+            st.warning("⚠️ σ < 1% — near-zero vol may cause numerical noise.")
+        if sigma_pct > 150.0:
+            st.warning("⚠️ σ > 150% — extreme volatility.")
+        if T <= 0:
+            st.warning("⚠️ Option has expired (T ≤ 0).")
+        elif T > 5:
+            st.info("ℹ️ T > 5 years — long-dated option.")
+        if S / K > 3 or K / S > 3:
+            st.info("ℹ️ Deep ITM/OTM — Greeks may be near zero.")
+        if r_pct < 0:
+            st.info("ℹ️ Negative risk-free rate.")
+
     return {
         "S": S,
         "K": K,
@@ -103,3 +118,4 @@ def render_sidebar() -> dict:
         "mult": float(mult),
         "tick": tick,
     }
+

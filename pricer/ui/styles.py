@@ -49,7 +49,7 @@ def inject_css():
 
         /* --- Main content area --- */
         .block-container {
-            padding-top: 1.5rem;
+            padding-top: 2.5rem;
             max-width: 1300px;
         }
 

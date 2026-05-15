@@ -299,12 +299,12 @@ def cash_greeks(S: float, K: float, T: float, r: float, q: float,
     Also includes unit greeks nested under 'unit'.
     """
     unit = all_greeks(S, K, T, r, q, sigma, option_type)
-    bs = price(S, K, T, r, q, sigma, option_type)
+    bs_price = price(S, K, T, r, q, sigma, option_type)
     fwd = forward(S, T, r, q)
     position = lots * mult
 
     return {
-        "bs_price": bs,
+        "bs_price": bs_price,
         "forward": fwd,
         # Cash delta = Δ × S × position
         "cash_delta": unit["delta"] * S * position,
