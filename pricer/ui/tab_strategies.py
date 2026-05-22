@@ -121,4 +121,4 @@ def render_strategies_tab(S: float, T: float, r: float, q: float, sigma: float, 
     layout["hovermode"] = "x unified"
     fig.update_layout(**layout)
     
-    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})

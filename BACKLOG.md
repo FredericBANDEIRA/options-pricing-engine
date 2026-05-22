@@ -7,7 +7,7 @@ Features and enhancements to implement in future versions.
 - [x] **Exotic options**: Barrier options (up-and-out, down-and-in, etc.), Asian options (arithmetic/geometric average), Digital/Binary options
 - [x] **Monte Carlo simulation engine**: Path simulation with GBM, variance reduction (antithetic, control variates), pricing path-dependent payoffs
 - [x] **Implied volatility solver**: Newton-Raphson / Brent solver to back out σ from market price
-- [ ] **Volatility surface**: 3D surface visualization (strike × maturity → implied vol), interpolation methods (SVI, SABR)
+- [x] **Volatility surface**: 3D surface visualization (strike × maturity → implied vol), SVI parameterization, yfinance market data support
 
 ## 🟡 Medium Priority
 
@@ -33,5 +33,6 @@ Features and enhancements to implement in future versions.
 
 ## ✅ Completed
 
+- [x] **v0.3 (Phase 3.1)** — Volatility Surface (3D, smiles, term structure, SVI, yfinance)
 - [x] **v0.2 (Phase 1)** — Implied Volatility Solver, Monte Carlo Engine, Exotic Options, Multi-Leg Strategies
 - [x] **v0.1** — Vanilla European options (BSM), full Greeks, CRR binomial tree, Plotly charts, interview questions

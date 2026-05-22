@@ -32,6 +32,7 @@ from pricer.ui.components import (
 )
 from pricer.ui.charts import chart_vs_spot, chart_vs_vol, build_all_charts, ALL_GREEKS_LIST
 from pricer.ui.tab_strategies import render_strategies_tab
+from pricer.ui.tab_vol_surface import render_vol_surface_tab
 
 
 # ---------------------------------------------------------------------------
@@ -86,7 +87,7 @@ st.markdown('<div class="app-header">Options Pricer</div>', unsafe_allow_html=Tr
 # ---------------------------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------------------------
-tab_pricer, tab_strategies, tab_interview = st.tabs(["📊 Derivatives Pricer", "📈 Strategies", "🎓 Interview Questions"])
+tab_pricer, tab_strategies, tab_vol, tab_interview = st.tabs(["📊 Derivatives Pricer", "📈 Strategies", "🌊 Vol Surface", "🎓 Interview Questions"])
 
 # ═══════════════════════════════════════════════════════════════════════════
 # TAB 1: Derivatives Pricer
@@ -255,7 +256,14 @@ with tab_strategies:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# TAB 3: Interview Questions
+# TAB 3: Vol Surface
+# ═══════════════════════════════════════════════════════════════════════════
+with tab_vol:
+    render_vol_surface_tab(S, r, q, sigma)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TAB 4: Interview Questions
 # ═══════════════════════════════════════════════════════════════════════════
 with tab_interview:
     st.markdown("### 🎓 Quant Interview Questions")
