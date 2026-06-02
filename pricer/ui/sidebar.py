@@ -21,11 +21,9 @@ def render_sidebar() -> dict:
     All rates are in decimal form (e.g. 0.05 for 5%).
     """
     with st.sidebar:
-        st.markdown("### Parameters")
-        st.markdown('<span class="param-sublabel">Market & Contract</span>',
+        st.markdown("### ⚙️ Options Parameters")
+        st.markdown('<span class="param-sublabel">Applies to Pricer · Strategies · Vol Surface</span>',
                     unsafe_allow_html=True)
-
-        st.markdown("")
 
         # --- Spot ---
         st.markdown('<div class="param-label">Spot (S)</div>', unsafe_allow_html=True)

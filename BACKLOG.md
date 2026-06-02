@@ -11,7 +11,7 @@ Features and enhancements to implement in future versions.
 
 ## 🟡 Medium Priority
 
-- [ ] **Bonds pricer**: Yield to maturity, duration (Macaulay, modified), convexity, price/yield curve
+- [x] **Bonds pricer**: Yield to maturity, duration (Macaulay, modified), convexity, DV01, price/yield curve
 - [ ] **Turbo warrants**: Knock-out barrier + leverage pricing, delta and participation rate
 - [ ] **Discount certificates**: Replication (long underlying + short call), capped upside analysis
 - [ ] **Bonus certificates**: Replication (long underlying + long down-and-out put), barrier monitoring
@@ -33,6 +33,7 @@ Features and enhancements to implement in future versions.
 
 ## ✅ Completed
 
+- [x] **v0.4** — Fixed-Income Bond Pricer (pricing, YTM, duration, convexity, DV01, price/yield curve)
 - [x] **v0.3 (Phase 3.1)** — Volatility Surface (3D, smiles, term structure, SVI, yfinance)
 - [x] **v0.2 (Phase 1)** — Implied Volatility Solver, Monte Carlo Engine, Exotic Options, Multi-Leg Strategies
 - [x] **v0.1** — Vanilla European options (BSM), full Greeks, CRR binomial tree, Plotly charts, interview questions

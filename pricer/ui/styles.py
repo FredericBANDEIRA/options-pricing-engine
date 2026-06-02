@@ -272,5 +272,26 @@ def inject_css():
         /* --- Positive / Negative value colouring --- */
         .value-positive { color: #0d9488 !important; }
         .value-negative { color: #e11d48 !important; }
+        
+        /* --- Pure CSS Auto-Collapse Sidebar --- */
+        /* Enable smooth transitions. Animatng margin-left is much smoother than width in flexbox */
+        [data-testid="stSidebar"] {
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.3s ease-in-out !important;
+        }
+
+        /* If the 4th (Bonds) or 5th (Interview) tab is selected, slide the sidebar out to the left. */
+        [data-testid="stAppViewContainer"]:has(button[data-baseweb="tab"]:nth-child(4)[aria-selected="true"]) [data-testid="stSidebar"],
+        [data-testid="stAppViewContainer"]:has(button[data-baseweb="tab"]:nth-child(5)[aria-selected="true"]) [data-testid="stSidebar"] {
+            margin-left: -400px !important; /* Slide it completely off-screen */
+            opacity: 0 !important;
+        }
+        
+        /* Hide the floating toggle button completely on these tabs */
+        [data-testid="stAppViewContainer"]:has(button[data-baseweb="tab"]:nth-child(4)[aria-selected="true"]) [data-testid="collapsedControl"],
+        [data-testid="stAppViewContainer"]:has(button[data-baseweb="tab"]:nth-child(5)[aria-selected="true"]) [data-testid="collapsedControl"] {
+            display: none !important;
+        }
+
     </style>
     """, unsafe_allow_html=True)
