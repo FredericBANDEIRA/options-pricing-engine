@@ -211,8 +211,10 @@ def asian_geometric_price(
         else:
             return max(K - S, 0.0)
 
-    # Adjusted parameters for geometric average
+    # Kemna-Vorst continuous geometric average parameters
     sigma_adj = sigma / np.sqrt(3)
-    r_adj = 0.5 * (r - q - sigma**2 / 6) + 0.5 * sigma_adj**2
-    # Use BS with adjusted params
-    return bs_price(S, K, T, r_adj, 0.0, sigma_adj, option_type) * np.exp((r_adj - r) * T)
+    b_adj = 0.5 * (r - q - sigma**2 / 6)
+    q_adj = r - b_adj
+    
+    # Use BS with original discount rate (r) and adjusted dividend yield (q_adj)
+    return bs_price(S, K, T, r, q_adj, sigma_adj, option_type)

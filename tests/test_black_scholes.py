@@ -179,7 +179,8 @@ class TestCashGreeks:
         assert abs(cg["cash_delta"] - expected) < 1e-6
 
     def test_gamma_1pct(self):
+        """Gamma/1% = P&L for a 1% spot move = ½ × Γ × (S × 0.01)² × position."""
         cg = cash_greeks(S, K, T, r, q, sigma, "call", lots=1.0, mult=100.0)
         unit_g = gamma(S, K, T, r, q, sigma)
-        expected = 0.5 * unit_g * S**2 * 0.01 * 100.0
+        expected = 0.5 * unit_g * (S * 0.01) ** 2 * 100.0
         assert abs(cg["gamma_1pct"] - expected) < 1e-6

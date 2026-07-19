@@ -310,10 +310,10 @@ def cash_greeks(S: float, K: float, T: float, r: float, q: float,
         "cash_delta": unit["delta"] * S * position,
         # Delta hedge = Δ × position (number of shares)
         "delta_hedge": unit["delta"] * position,
-        # ΔT+1D = theta per day × position (P&L from overnight theta)
-        "delta_t1d": (unit["theta"] / 365) * position,
-        # Gamma / 1% = ½ Γ S² × 0.01 × position
-        "gamma_1pct": 0.5 * unit["gamma"] * S**2 * 0.01 * position,
+        # ΔT+1D = charm per day × position (daily change in delta shares)
+        "delta_t1d": (unit["charm"] / 365) * position,
+        # Gamma / 1% = P&L for a 1% spot move = ½ Γ (S × 0.01)² × position
+        "gamma_1pct": 0.5 * unit["gamma"] * (S * 0.01) ** 2 * position,
         # Theta / day = Θ / 365 × position
         "theta_day": (unit["theta"] / 365) * position,
         # Vega / 1% = ν × 0.01 × position
@@ -401,7 +401,7 @@ def gamma_theta_bill(S: float, K: float, T: float, r: float, q: float,
     unit = all_greeks(S, K, T, r, q, sigma, option_type)
     position = lots * mult
 
-    gamma_cash_1pct = 0.5 * unit["gamma"] * S**2 * 0.01 * position
+    gamma_cash_1pct = 0.5 * unit["gamma"] * (S * 0.01) ** 2 * position
     theta_implied_daily = 0.5 * unit["gamma"] * S**2 * sigma**2 / 365.0 * position
     theta_actual_daily = (unit["theta"] / 365.0) * position
 

@@ -139,6 +139,8 @@ def generate_synthetic_surface(
         "moneyness": moneyness,
         "forwards": forwards,
         "spot": S,
+        "r": r,
+        "q": q,
     }
 
 
@@ -230,8 +232,8 @@ def smooth_surface(
     ivs_smooth = np.clip(ivs_smooth, 0.02, 2.0)
 
     # Rebuild derived arrays
-    r = 0.05  # approximate
-    q = 0.0
+    r = surface.get("r", 0.05)
+    q = surface.get("q", 0.0)
     F0 = S * np.exp((r - q) * new_maturities[0])
     new_moneyness = np.log(new_strikes / F0)
     new_forwards = np.array([S * np.exp((r - q) * T) for T in new_maturities])
@@ -243,6 +245,8 @@ def smooth_surface(
         "moneyness": new_moneyness,
         "forwards": new_forwards,
         "spot": S,
+        "r": r,
+        "q": q,
         **({"ticker": surface["ticker"]} if "ticker" in surface else {}),
     }
 
@@ -374,6 +378,8 @@ def fetch_market_surface(ticker: str, r: float = 0.05, q: float = 0.0) -> dict |
             "moneyness": moneyness,
             "forwards": forwards,
             "spot": S,
+            "r": r,
+            "q": q,
             "ticker": ticker,
         }
 

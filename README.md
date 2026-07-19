@@ -32,21 +32,37 @@ uv run python -m pytest tests/ -v
 Pricer/
 ├── app.py                      # Streamlit entry point
 ├── pricer/
+│   ├── analytics/
+│   │   └── vol_surface.py      # Volatility surface builder (SVI + Market)
 │   ├── models/
+│   │   ├── binomial.py         # CRR binomial tree (American)
 │   │   ├── black_scholes.py    # BSM closed-form pricing + Greeks
-│   │   └── binomial.py         # CRR binomial tree (American)
+│   │   ├── bonds.py            # Fixed-income bond pricer
+│   │   ├── exotic.py           # Barrier, Asian, Digital options
+│   │   ├── implied_vol.py      # Newton-Raphson/Brent IV solvers
+│   │   ├── monte_carlo.py      # Vectorised MC engine
+│   │   └── strategies.py       # Multi-leg option strategies
 │   ├── utils/
 │   │   └── dates.py            # Year-fraction (ACT/365)
 │   └── ui/
-│       ├── styles.py           # Custom CSS
-│       ├── components.py       # Metric cards, Greek tables
 │       ├── charts.py           # Plotly chart builders
-│       └── sidebar.py          # Parameter sidebar
+│       ├── components.py       # Metric cards, Greek tables
+│       ├── sidebar.py          # Parameter sidebar
+│       ├── styles.py           # Custom CSS
+│       ├── tab_bonds.py        # Bonds UI tab
+│       ├── tab_strategies.py   # Strategies UI tab
+│       └── tab_vol_surface.py  # Vol Surface UI tab
 ├── data/
 │   └── interview_questions.json
 ├── tests/
+│   ├── test_binomial.py
 │   ├── test_black_scholes.py
-│   └── test_binomial.py
+│   ├── test_bonds.py
+│   ├── test_exotic.py
+│   ├── test_implied_vol.py
+│   ├── test_monte_carlo.py
+│   ├── test_strategies.py
+│   └── test_vol_surface.py
 ├── pyproject.toml
 └── BACKLOG.md
 ```
